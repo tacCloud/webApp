@@ -1,9 +1,15 @@
 package main
 
+/*
+References:
+https://github.com/gorilla/websocket/tree/master/examples/echo
+*/
+
 import (
 	"flag"
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -24,16 +30,6 @@ var fakeItems = [...]InventoryItem{
 	{ItemName: "Pee", Price: 42},
 }
 
-//var homeTemplate = template.Must(template.New("").ParseFiles("tmp1.html"))
-
-/*
-func process(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("tmp1.html")
-	//t.Execute(w, "Hello World!")
-	t.Execute(w, fakeItems)
-}
-*/
-
 var upgrader = websocket.Upgrader{} // use default options
 
 func echo(w http.ResponseWriter, r *http.Request) {
@@ -51,9 +47,22 @@ func echo(w http.ResponseWriter, r *http.Request) {
 			log.Println("read:", err)
 			break
 		}
-
 		log.Printf("recv: %s", message)
-		err = c.WriteMessage(mt, []byte("test1:hello:there")) //message)
+		if string(message)[0] == '#' {
+			log.Println("update")
+		} else {
+			log.Println("Customer bought!")
+		}
+
+		numItems := rand.Intn(len(fakeItems))
+		startItem := rand.Intn(len(fakeItems))
+
+		s := ""
+		for i := 0; i < numItems; i++ {
+			s += fakeItems[(i+startItem)%len(fakeItems)].ItemName + ":"
+		}
+		err = c.WriteMessage(mt, []byte(s))
+		//err = c.WriteMessage(mt, []byte("test1:hello:there")) //message)
 		if err != nil {
 			log.Println("write:", err)
 			break
@@ -67,12 +76,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//homeTemplate.Execute(os.Stdout, "ws://"+r.Host+"/echo")
 	homeTemplate.Execute(w, "ws://"+r.Host+"/echo")
 }
 
 func main() {
-	//fmt.Print(homeTemplate)
 	flag.Parse()
 	log.SetFlags(0)
 
@@ -82,6 +89,5 @@ func main() {
 	http.HandleFunc("/echo", echo)
 	http.HandleFunc("/", home)
 
-	//	http.HandleFunc("/process", process)
 	server.ListenAndServe()
 }

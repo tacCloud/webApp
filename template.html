@@ -5,28 +5,51 @@
     <title> Go Web Programming </title>
 </head>
 <script>
+    var doAutoRefresh = true;
     window.addEventListener("load", function (evt) {
-        var output = document.getElementById("output");
-        var input = document.getElementById("input");
         var ws;
-        /*
-        var print = function (message) {
-            var d = document.createElement("div");
-            d.textContent = message;
-            output.appendChild(d);
-        };
-        */
+
+        function showHide (id, doShow) {
+            var x = document.getElementById(id);
+            if (!doShow) {
+                x.style.visibility = "hidden";
+            } else {
+                x.style.visibility = "visible";
+            }
+        }
+
+        showHide("open", true);
+        showHide("close", false);
+        showHide("inventory", false);
+
+        function doInventoryRefresh() {
+            if(!doAutoRefresh) {
+                return;
+            }
+            if (ws) {
+                ws.send("#refresh")
+                setTimeout(doInventoryRefresh, 3000);
+            }
+        }
+
         document.getElementById("open").onclick = function (evt) {
             if (ws) {
                 return false;
             }
             ws = new WebSocket("{{.}}");
+
+            showHide("open", false);
+            showHide("close", true);
+            showHide("inventory", true);
+  
             ws.onopen = function (evt) {
-                ws.send("open");
-            //    print("OPEN");
+                ws.send("#open");
+                var button = document.getElementById("open")
+                if(doAutoRefresh) {
+                    setTimeout(doInventoryRefresh, 3000);
+                }
             }
             ws.onclose = function (evt) {
-              //  print("CLOSE");
                 ws = null;
             }
             ws.onmessage = function (evt) {
@@ -38,29 +61,48 @@
                     optionHTML += "\n<option>" + items[i] + "</options>";
                 }
                 inventoryTable.innerHTML = optionHTML;
-                //print("RESPONSE: " + evt.data);
             }
             ws.onerror = function (evt) {
-                //print("ERROR: " + evt.data);
             }
             return false;
         };
-        document.getElementById("send").onclick = function (evt) {
+        document.getElementById("buyButton").onclick = function (evt) {
             if (!ws) {
                 return false;
             }
-            //print("SEND: " + input.value);
-            ws.send(input.value);
+            var x = document.getElementById("inventory").selectedIndex;
+            var y = document.getElementById("inventory").options;
+            if(x < 0 ){
+                alert("Nothing selected!");
+                return false;
+            }
+            ws.send(y[x].text);
             return false;
         };
         document.getElementById("close").onclick = function (evt) {
             if (!ws) {
                 return false;
             }
+            document.getElementById("inventory").innerHTML = "";
+            showHide("open", true);
+            showHide("close", false);
+            showHide("inventory", false);
             ws.close();
             return false;
         };
+        document.getElementById("doAutoRefresh").onclick = function (evt) {
+            doAutoRefresh = !doAutoRefresh;
+            var el = document.getElementById("doAutoRefresh");
+            if(doAutoRefresh) {
+                el.innerHTML = "StopAutoRefresh";
+            } else {
+                el.innerHTML = "DoAutoRefresh";
+            }
+            doInventoryRefresh();
+            return false;
+        };
     });
+    //TODO: kafka events for customers just clicking items (but not buying)
 </script>
 
 <body>
@@ -68,14 +110,13 @@
         <!-- FIll in options here -->
     </select>
     <p>Click "Open" to create a connection to the server,
-        "Send" to send a message to the server and "Close" to close the connection.
-        You can change the message and send multiple times.
+        "Buy" to purchase and "Close" to close the connection.
     <p>
     <form>
         <button id="open">Open</button>
         <button id="close">Close</button>
-        <p><input id="input" type="text" value="Hello world!">
-            <button id="send">Send</button>
+        <button id="buyButton">Buy</button>
+        <button id="doAutoRefresh">StopAutoRefresh</button>
     </form>
 </body>
 </html>
