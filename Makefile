@@ -4,8 +4,9 @@
 all: image
 
 PLATFORM=local
-TARGETOS=darwin
+TARGETOS=linux
 TARGETARCH=amd64
+IMAGE_NAME=inventory-web-app
 
 .PHONY: bin/webApp
 bin/webApp:
@@ -21,3 +22,8 @@ image:
 	--build-arg TARGETOS=${TARGETOS} \
 	--build-arg TARGETARCH=${TARGETARCH} \
 	--tag inventory-web-app:latest
+
+.PHONY: tagPush
+tagPush: image
+	@docker tag ${IMAGE_NAME} rmccabe3701/${IMAGE_NAME}:latest && \
+		docker push rmccabe3701/${IMAGE_NAME}

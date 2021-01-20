@@ -23,7 +23,7 @@ type InventoryItem struct {
 }
 
 var fakeItems = [...]InventoryItem{
-	{ItemName: "Foo", Price: 37},
+	{ItemName: "Fooaaaaaaaaaaaaaa", Price: 37},
 	{ItemName: "Bar", Price: 42},
 	{ItemName: "Bill", Price: 42},
 	{ItemName: "Boo", Price: 42},
@@ -82,6 +82,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
+	log.Println("Starting server");
 
 	server := http.Server{
 		//Addr: "127.0.0.1:8080",

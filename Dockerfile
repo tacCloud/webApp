@@ -3,7 +3,8 @@ FROM golang:1.15.2-alpine AS base
 WORKDIR /src
 ENV CGO_ENABLED=0
 COPY go.* ./
-COPY *.go ./
+COPY web/*.go ./
+# COPY *.go ./
 
 FROM base AS build
 ARG TARGETOS
@@ -17,7 +18,7 @@ FROM scratch
 
 
 COPY --from=build /out/webApp /webApp
-COPY template.html /template.html
+COPY web/template.html /template.html
 #FROM bin-linux as bin-darwin
 
 #FROM bin-${TARGETOS} AS bin

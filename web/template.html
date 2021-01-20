@@ -106,9 +106,6 @@
 </script>
 
 <body>
-    <select id="inventory" size={{len .}}>
-        <!-- FIll in options here -->
-    </select>
     <p>Click "Open" to create a connection to the server,
         "Buy" to purchase and "Close" to close the connection.
     <p>
@@ -118,5 +115,9 @@
         <button id="buyButton">Buy</button>
         <button id="doAutoRefresh">StopAutoRefresh</button>
     </form>
+    <hr>
+    <select id="inventory" size={{len .}} style="width: 300px;">
+        <!-- FIll in options here -->
+    </select>
 </body>
 </html>

@@ -1,4 +1,4 @@
-module webApp
+module github.com/tacCloud/webApp
 
 go 1.15
 
