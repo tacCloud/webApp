@@ -14,7 +14,6 @@ import (
 
 	"github.com/gorilla/websocket"
 )
-
 var testInventory = flag.Bool("t", false, "test mode")
 
 type InventoryItem struct {
@@ -82,7 +81,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-	log.Println("Starting server");
+	log.Println("Starting server!");
 
 	server := http.Server{
 		//Addr: "127.0.0.1:8080",
