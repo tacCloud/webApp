@@ -1,7 +1,11 @@
 #From: https://github.com/chris-crone/containerized-go-dev/blob/main/Makefile
-all: bin/webApp
+#NOTE: looks like docker build uses buildkit to build images.
+# you can disable this by setting DOCKER_BUILDKIT=0
+all: image
 
 PLATFORM=local
+TARGETOS=darwin
+TARGETARCH=amd64
 
 .PHONY: bin/webApp
 bin/webApp:
@@ -14,6 +18,6 @@ bin/webApp:
 .PHONY: image
 image:
 	@docker build . \
-	--tag inventory-web-app:latest \
-	--target bin-darwin \
-	--platform ${PLATFORM}
+	--build-arg TARGETOS=${TARGETOS} \
+	--build-arg TARGETARCH=${TARGETARCH} \
+	--tag inventory-web-app:latest
