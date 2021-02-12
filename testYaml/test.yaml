@@ -18,6 +18,8 @@ spec:
       containers:
       - image: rmccabe3701/inventory-web-app:latest
         name: webapp
+        imagePullPolicy: Always
+        args: ["-t"]
 ---
 apiVersion: v1
 kind: Service

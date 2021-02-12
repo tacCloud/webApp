@@ -7,27 +7,19 @@ https://github.com/gorilla/websocket/tree/master/examples/echo
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
-	"math/rand"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/gorilla/websocket"
+	"github.com/tacCloud/webApp/pkg/dbMgr"
+	"github.com/tacCloud/webApp/pkg/inventoryMgr"
 )
+
 var testInventory = flag.Bool("t", false, "test mode")
-
-type InventoryItem struct {
-	ItemName string
-	Price    int
-}
-
-var fakeItems = [...]InventoryItem{
-	{ItemName: "Fooaaaaaaaaaaaaaa", Price: 37},
-	{ItemName: "Bar", Price: 42},
-	{ItemName: "Bill", Price: 42},
-	{ItemName: "Boo", Price: 42},
-	{ItemName: "Pee", Price: 42},
-}
 
 var upgrader = websocket.Upgrader{} // use default options
 
@@ -51,17 +43,18 @@ func echo(w http.ResponseWriter, r *http.Request) {
 			log.Println("update")
 		} else {
 			log.Println("Customer bought!")
+			itemPrice := strings.Split(string(message), " ")
+			price, _ := strconv.ParseFloat(itemPrice[len(itemPrice)-1][1:], 32)
+			inventoryMgr.BuyItem(inventoryMgr.InventoryItem{
+				strings.Join(itemPrice[0:len(itemPrice)-1], " "),
+				float32(price)})
 		}
-
-		numItems := rand.Intn(len(fakeItems))
-		startItem := rand.Intn(len(fakeItems))
-
+		items := inventoryMgr.GetItems()
 		s := ""
-		for i := 0; i < numItems; i++ {
-			s += fakeItems[(i+startItem)%len(fakeItems)].ItemName + ":"
+		for _, e := range items {
+			s += fmt.Sprintf("%s $%.2f:", e.ItemName, e.Price)
 		}
 		err = c.WriteMessage(mt, []byte(s))
-		//err = c.WriteMessage(mt, []byte("test1:hello:there")) //message)
 		if err != nil {
 			log.Println("write:", err)
 			break
@@ -81,7 +74,11 @@ func home(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-	log.Println("Starting server!");
+	log.Println("Starting server!")
+
+	if *testInventory {
+		dbMgr.FakeDb = true
+	}
 
 	server := http.Server{
 		//Addr: "127.0.0.1:8080",
