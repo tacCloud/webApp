@@ -8,8 +8,8 @@ pipeline {
     environment{
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
-        TARGETOS=linux
-        TARGETARCH=amd64
+        TARGETOS='linux'
+        TARGETARCH='amd64'
     }
     stages {
         stage('docker login') {
