@@ -74,7 +74,7 @@ pipeline {
                 ./kubectl apply -f ./kubernetes/services/service.yaml
                 '''
         }
-      */
     }
+*/
 }
 }
