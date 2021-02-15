@@ -4,10 +4,20 @@ node('jenkins-slave') {
         sh(script: """
             whoami
             docker run --rm alpine /bin/sh -c "echo hello world"
+            go version
         """)
     }
 }
 */
+node('master') {
+     stage('lets-do-this') {
+        sh(script: """
+            whoami
+            go version
+        """)
+    }
+}
+/*
 pipeline {
     agent { docker { image 'golang' } }
     stages {
@@ -18,3 +28,4 @@ pipeline {
         }
     }
 }
+*/
