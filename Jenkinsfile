@@ -11,10 +11,13 @@ node('jenkins-slave') {
 */
 node('master') {
      stage('lets-do-this') {
-        sh(script: """
-            whoami
-            go version
-        """)
+
+        def root = tool type: 'go', name: 'Go 1.15'
+
+       // Export environment variables pointing to the directory where Go was installed
+       withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+           sh 'go version'
+       }
     }
 }
 /*
