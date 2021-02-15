@@ -20,20 +20,11 @@ pipeline {
             }
         }
 
-/*
-        stage('git clone') {
-            steps{
-                sh(script: """
-                    git clone https://github.com/marcel-dempers/docker-development-youtube-series.git
-                """, returnStdout: true)
-            }
-        }
-   */
         stage('go test') {
             steps{
                 sh(script: """
                     export PATH=$PATH:/usr/local/go/bin
-                    go test ./pkg/inventoryMgr
+                    go test -v ./pkg/inventoryMgr
                 """, returnStdout: true)
             }
         }
@@ -60,6 +51,7 @@ pipeline {
         }
 
 /*
+I think this should be done in argocd
         stage('deploy') {
             steps{
                 sh script: '''
