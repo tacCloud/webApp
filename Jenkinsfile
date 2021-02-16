@@ -59,7 +59,6 @@ This will be a simple test cluster.  I will do more complete tests in argocd.
             steps{
                 sh script: '''
                 #!/bin/bash
-                cd $WORKSPACE/docker-development-youtube-series/
                 #get kubectl for this demo
                 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
                 chmod +x ./kubectl
