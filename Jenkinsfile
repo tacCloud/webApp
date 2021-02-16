@@ -25,7 +25,6 @@ pipeline {
                 sh(script: """
                     export PATH=$PATH:/usr/local/go/bin
                     go test -v ./pkg/inventoryMgr
-                    echo "Passed = $?"
                 """, returnStdout: true)
             }
         }
