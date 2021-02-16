@@ -47,7 +47,7 @@ pipeline {
         stage('docker push') {
             steps{
                 sh(script: """
-                    docker push ${DOCKER_USERNAME}/inventory-web-app:${BUILD_NUMBER}
+                    docker push ${DOCKER_USERNAME}/inventory-web-app:1.0.${BUILD_NUMBER}
                 """)
             }
         }

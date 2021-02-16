@@ -16,7 +16,7 @@ spec:
         app: webapp
     spec:
       containers:
-      - image: rmccabe3701/inventory-web-app:latest
+      - image: rmccabe3701/inventory-web-app:0.0.1
         name: webapp
         imagePullPolicy: Always
         args: ["-t"]
