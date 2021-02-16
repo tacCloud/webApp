@@ -8,6 +8,7 @@ pipeline {
     environment{
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
+        VERSION_PREFIX = "1.0"
         TARGETOS='linux'
         TARGETARCH='amd64'
     }
@@ -39,7 +40,7 @@ pipeline {
                 docker build . \
                  --build-arg TARGETOS=${TARGETOS} \
                  --build-arg TARGETARCH=${TARGETARCH} \
-                 --tag ${DOCKER_USERNAME}/inventory-web-app:${BUILD_NUMBER}
+                 --tag ${DOCKER_USERNAME}/inventory-web-app:${VERSION_PREFIX}.${BUILD_NUMBER}
                 '''
             }
         }
@@ -47,7 +48,7 @@ pipeline {
         stage('docker push') {
             steps{
                 sh(script: """
-                    docker push ${DOCKER_USERNAME}/inventory-web-app:1.0.${BUILD_NUMBER}
+                    docker push ${DOCKER_USERNAME}/inventory-web-app:${VERSION_PREFIX}.${BUILD_NUMBER}
                 """)
             }
         }
@@ -62,7 +63,7 @@ This will be a simple test cluster.  I will do more complete tests in argocd.
                 #get kubectl for this demo
                 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
                 chmod +x ./kubectl
-                cat ./testYaml/test.yaml | sed s/0.0.1/1.0.${BUILD_NUMBER}/g | ./kubectl apply -f -
+                cat ./testYaml/test.yaml | sed s/0.0.1/${VERSION_PREFIX}.${BUILD_NUMBER}/g | ./kubectl apply -f -
                 '''
         }
     }
