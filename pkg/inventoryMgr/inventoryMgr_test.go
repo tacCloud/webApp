@@ -13,7 +13,7 @@ func init() {
 
 func TestGetItems(t *testing.T) {
 	items := GetItems()
-	if len(items) != 3 {
+	if len(items) != 2 {
 		t.Error("Bad length")
 	}
 	var total float32

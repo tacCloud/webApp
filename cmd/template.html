@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title> Go Web Programming </title>
+    <title> XYZ Portal </title>
 </head>
 <script>
     var doAutoRefresh = true;
@@ -36,7 +36,7 @@
             if (ws) {
                 return false;
             }
-            ws = new WebSocket("{{.}}");
+            ws = new WebSocket("{{ .Host }}");
 
             showHide("open", false);
             showHide("close", true);
@@ -106,7 +106,9 @@
 </script>
 
 <body>
-    <p>Click "Open" to create a connection to the server,
+    <h1>XYZ Marketplace v{{ .Version }}</h1>
+    <p>
+        Click "Open" to create a connection to the server,
         "Buy" to purchase and "Close" to close the connection.
     <p>
     <form>
@@ -116,7 +118,7 @@
         <button id="doAutoRefresh">StopAutoRefresh</button>
     </form>
     <hr>
-    <select id="inventory" size={{len .}} style="width: 300px;">
+    <select id="inventory" size={{len .Host}} style="width: 300px;">
         <!-- FIll in options here -->
     </select>
 </body>

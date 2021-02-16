@@ -24,6 +24,8 @@ pipeline {
             steps{
                 sh(script: """
                     export PATH=$PATH:/usr/local/go/bin
+                    go get -u golang.org/x/lint/golint
+                    ~/go/bin/golint ./...
                     go test -v ./pkg/inventoryMgr
                 """, returnStdout: true)
             }
@@ -51,7 +53,8 @@ pipeline {
         }
 
 /*
-I think this should be done in argocd
+This will be a simple test cluster.  I will do more complete tests in argocd.
+*/
         stage('deploy') {
             steps{
                 sh script: '''
@@ -60,13 +63,9 @@ I think this should be done in argocd
                 #get kubectl for this demo
                 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
                 chmod +x ./kubectl
-                ./kubectl apply -f ./kubernetes/configmaps/configmap.yaml
-                ./kubectl apply -f ./kubernetes/secrets/secret.yaml
-                cat ./kubernetes/deployments/deployment.yaml | sed s/1.0.0/${BUILD_NUMBER}/g | ./kubectl apply -f -
-                ./kubectl apply -f ./kubernetes/services/service.yaml
+                cat ./testYaml/test.yaml | sed s/0.0.1/1.0.${BUILD_NUMBER}/g | ./kubectl apply -f -
                 '''
         }
     }
-*/
 }
 }

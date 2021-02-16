@@ -11,6 +11,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -68,7 +69,21 @@ func home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	homeTemplate.Execute(w, "ws://"+r.Host+"/echo")
+
+	ver := os.Getenv("XYZ_MARKETPLACE_VERSION")
+	if ver == "" {
+		ver = "1.0.0"
+	}
+	data := struct {
+		Host    string
+		Version string
+	}{
+		Host:    "ws://" + r.Host + "/echo",
+		Version: ver,
+	}
+	//homeTemplate.Execute(w, "ws://"+r.Host+"/echo")
+	fmt.Println(data)
+	homeTemplate.Execute(w, data)
 }
 
 func main() {

@@ -20,6 +20,9 @@ spec:
         name: webapp
         imagePullPolicy: Always
         args: ["-t"]
+        env:
+        - name: XYZ_MARKETPLACE_VERSION
+          value: "0.0.1"
 ---
 apiVersion: v1
 kind: Service
