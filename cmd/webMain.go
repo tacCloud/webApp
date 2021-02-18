@@ -21,6 +21,7 @@ import (
 )
 
 var testInventory = flag.Bool("t", false, "test mode")
+var dbEndpoint = flag.String("dbEp", "redis:6379", "Database Endpoint")
 
 var upgrader = websocket.Upgrader{} // use default options
 
@@ -91,9 +92,7 @@ func main() {
 	log.SetFlags(0)
 	log.Println("Starting server!")
 
-	if *testInventory {
-		dbMgr.FakeDb = true
-	}
+	dbMgr.InitializeDatabase(*testInventory, *dbEndpoint)
 
 	server := http.Server{
 		//Addr: "127.0.0.1:8080",
@@ -104,3 +103,20 @@ func main() {
 
 	server.ListenAndServe()
 }
+
+/*
+Testing
+-> % docker run -it --rm redis redis-cli -h 172.17.0.2
+172.17.0.2:6379>
+172.17.0.2:6379>
+172.17.0.2:6379> SET Bahamas Nassau
+OK
+172.17.0.2:6379> GET Bahamas
+"Nassau"
+172.17.0.2:6379> GET poop
+"13.2"
+172.17.0.2:6379> SET "A book" 13.5
+OK
+172.17.0.2:6379> SET "A Better Book" 1.0
+OK
+*/

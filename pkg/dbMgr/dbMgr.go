@@ -8,7 +8,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-var FakeDb bool = false
 var rdb *redis.Client
 var ctx = context.Background()
 
@@ -17,17 +16,22 @@ var fakeItems = map[string]float32{
 	"The Idiot":            10.00,
 }
 
+func InitializeDatabase(fakeDb bool, dbEndpoint string) {
+	if fakeDb {
+		return
+	}
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     dbEndpoint,
+		Password: "",
+		DB:       0,
+	})
+}
+
 // DumpDataBase is great
 func DumpDataBase() (map[string]float32, error) {
 
-	if FakeDb {
+	if rdb == nil {
 		return fakeItems, nil
-	} else if rdb == nil {
-		rdb = redis.NewClient(&redis.Options{
-			Addr:     "redis:6379",
-			Password: "",
-			DB:       0,
-		})
 	}
 
 	snapshot := make(map[string]float32)
@@ -55,7 +59,7 @@ func DumpDataBase() (map[string]float32, error) {
 
 func BuyItem(item string) {
 	fmt.Println("Buying ", item)
-	if FakeDb {
+	if rdb == nil {
 		delete(fakeItems, item)
 	} else {
 		rdb.Del(ctx, item)
@@ -63,7 +67,7 @@ func BuyItem(item string) {
 }
 
 func AddItem(item string, price float32) {
-	if FakeDb {
+	if rdb == nil {
 		fakeItems[item] = price
 	} else {
 		s := strconv.FormatFloat(float64(price), 'f', -1, 32)
