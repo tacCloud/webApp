@@ -77,7 +77,7 @@ This will be a simple test cluster.  I will do more complete tests in argocd.
                 OLDEST_IMAGE_TO_KEEP=$((BUILD_NUMBER-NUM_IMAGES_TO_KEEP))
                 for I in $(seq $OLDEST_IMAGE $OLDEST_IMAGE_TO_KEEP)
                 do
-                    DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD ./scripts/cleanup_dockerhub.sh $I
+                    DOCKERHUB_PASSWORD=$DOCKER_PASSWORD ./scripts/cleanup_dockerhub.sh $I
                 done
                 '''
             }
