@@ -70,15 +70,15 @@ This will be a simple test cluster.  I will do more complete tests in argocd.
 
         stage('docker cleanup') {
             steps{
-                sh(script: """
+                sh script: '''
                 #!/bin/bash
-                    OLDEST_IMAGE=$((BUILD_NUMBER-10))
-                    OLDEST_IMAGE_TO_KEEP=$((BUILD_NUMBER-NUM_IMAGES_TO_KEEP))
-                    for I in $(seq $OLDEST_IMAGE $OLDEST_IMAGE_TO_KEEP)
-                    do
-                        DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD ./scripts/cleanup_dockerhub.sh $I
-                    done
-                """)
+                OLDEST_IMAGE=$((BUILD_NUMBER-10))
+                OLDEST_IMAGE_TO_KEEP=$((BUILD_NUMBER-NUM_IMAGES_TO_KEEP))
+                for I in $(seq $OLDEST_IMAGE $OLDEST_IMAGE_TO_KEEP)
+                do
+                    DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD ./scripts/cleanup_dockerhub.sh $I
+                done
+                '''
             }
         }
     }
