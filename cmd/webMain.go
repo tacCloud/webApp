@@ -103,20 +103,3 @@ func main() {
 
 	server.ListenAndServe()
 }
-
-/*
-Testing
--> % docker run -it --rm redis redis-cli -h 172.17.0.2
-172.17.0.2:6379>
-172.17.0.2:6379>
-172.17.0.2:6379> SET Bahamas Nassau
-OK
-172.17.0.2:6379> GET Bahamas
-"Nassau"
-172.17.0.2:6379> GET poop
-"13.2"
-172.17.0.2:6379> SET "A book" 13.5
-OK
-172.17.0.2:6379> SET "A Better Book" 1.0
-OK
-*/

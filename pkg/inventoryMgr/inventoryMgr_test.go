@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	dbMgr.FakeDb = true
+	dbMgr.InitializeDatabase(true, "")
 }
 
 func TestGetItems(t *testing.T) {

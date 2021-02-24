@@ -74,3 +74,22 @@ func AddItem(item string, price float32) {
 		rdb.Set(ctx, item, s, 0)
 	}
 }
+
+/*
+Testing
+-> % docker run --name redis-test-instance -p 6379:6379 -d redis
+-> % docker run -it --rm redis redis-cli -h 172.17.0.2
+172.17.0.2:6379>
+172.17.0.2:6379>
+172.17.0.2:6379> SET Bahamas Nassau
+OK
+172.17.0.2:6379> GET Bahamas
+"Nassau"
+172.17.0.2:6379> GET poop
+"13.2"
+172.17.0.2:6379> SET "A book" 13.5
+OK
+172.17.0.2:6379> SET "A Better Book" 1.0
+OK
+
+*/
