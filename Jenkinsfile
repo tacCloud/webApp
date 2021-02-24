@@ -11,6 +11,7 @@ pipeline {
         VERSION_PREFIX = "1.0"
         TARGETOS='linux'
         TARGETARCH='amd64'
+        NUM_IMAGES_TO_KEEP=5
     }
     stages {
         stage('docker login') {
@@ -65,6 +66,20 @@ This will be a simple test cluster.  I will do more complete tests in argocd.
                 chmod +x ./kubectl
                 cat ./testYaml/test.yaml | sed s/0.0.1/${VERSION_PREFIX}.${BUILD_NUMBER}/g | ./kubectl apply -f -
                 '''
+        }
+
+        stage('docker cleanup') {
+            steps{
+                sh(script: """
+                #!/bin/bash
+                    OLDEST_IMAGE=$((BUILD_NUMBER-10))
+                    OLDEST_IMAGE_TO_KEEP=$((BUILD_NUMBER-NUM_IMAGES_TO_KEEP))
+                    for I in $(seq $OLDEST_IMAGE $OLDEST_IMAGE_TO_KEEP)
+                    do
+                        DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD ./scripts/cleanup_dockerhub.sh $I
+                    done
+                """)
+            }
         }
     }
 }
