@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "inventoryWebApp.labels" . | nindent 4 }}
+    app: webApp
+  name: {{ include "inventoryWebApp.fullname" . }}-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "inventoryWebApp.selectorLabels" . | nindent 6 }}
+      app: webApp
+  template:
+    metadata:
+      labels:
+        {{- include "inventoryWebApp.selectorLabels" . | nindent 8 }}
+        app: webApp
+    spec:
+      containers:
+      - image: rmccabe3701/inventory-web-app:{{ .Chart.AppVersion }}
+        name: webapp
+        imagePullPolicy: Always
+        env:
+        - name: XYZ_MARKETPLACE_VERSION
+          value: {{ .Chart.AppVersion }}
+      {{- if .Values.testMode }}
+        args: [ "-t"]
+      {{- else }}
+      initContainers:
+      - name: init-waitdb
+        image: busybox
+        command: ['sh', '-c', 'echo "sleeping"; sleep 5; echo "done"']
+      {{- end }}    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "inventoryWebApp.fullname" . }}-webapp
+  labels:
+    {{- include "inventoryWebApp.labels" . | nindent 4 }}
+    app: webApp
+spec:
+  ports:
+  - port: {{.Values.webApp.port}}
+    protocol: TCP
+    targetPort: {{.Values.webApp.port}}
+  selector:
+    {{- include "inventoryWebApp.selectorLabels" . | nindent 4 }}
+    app: webApp
+  type: {{.Values.webApp.serviceType}}

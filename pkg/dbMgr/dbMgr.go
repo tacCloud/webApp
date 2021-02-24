@@ -25,6 +25,10 @@ func InitializeDatabase(fakeDb bool, dbEndpoint string) {
 		Password: "",
 		DB:       0,
 	})
+	statusCmd := rdb.Ping(ctx)
+	if statusCmd.Err() != nil {
+		panic(statusCmd.Err())
+	}
 }
 
 // DumpDataBase is great
@@ -77,7 +81,7 @@ func AddItem(item string, price float32) {
 
 /*
 Testing
--> % docker run --name redis-test-instance -p 6379:6379 -d redis
+-> % docker run --rm --name redis-test-instance -p 6379:6379 -d redis
 -> % docker run -it --rm redis redis-cli -h 172.17.0.2
 172.17.0.2:6379>
 172.17.0.2:6379>

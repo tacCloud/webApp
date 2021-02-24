@@ -1,0 +1,41 @@
+{{- if not .Values.testMode }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "inventoryWebApp.labels" . | nindent 4 }}
+    app: redis
+  name: {{ include "inventoryWebApp.fullname" . }}-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "inventoryWebApp.selectorLabels" . | nindent 6 }}
+      app: redis
+  template:
+    metadata:
+      labels:
+        {{- include "inventoryWebApp.selectorLabels" . | nindent 8 }}
+        app: redis
+    spec:
+      containers:
+      - image: redis:6.0.10
+        name: redis
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    {{- include "inventoryWebApp.labels" . | nindent 4 }}
+    app: redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    {{- include "inventoryWebApp.selectorLabels" . | nindent 4 }}
+    app: redis
+{{- end }}
