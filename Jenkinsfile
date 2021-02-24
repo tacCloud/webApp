@@ -66,6 +66,7 @@ This will be a simple test cluster.  I will do more complete tests in argocd.
                 chmod +x ./kubectl
                 cat ./testYaml/test.yaml | sed s/0.0.1/${VERSION_PREFIX}.${BUILD_NUMBER}/g | ./kubectl apply -f -
                 '''
+            }
         }
 
         stage('docker cleanup') {
@@ -82,5 +83,4 @@ This will be a simple test cluster.  I will do more complete tests in argocd.
             }
         }
     }
-}
 }
