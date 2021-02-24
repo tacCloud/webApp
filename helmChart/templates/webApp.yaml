@@ -29,8 +29,8 @@ spec:
       {{- else }}
       initContainers:
       - name: init-waitdb
-        image: busybox
-        command: ['sh', '-c', 'echo "sleeping"; sleep 5; echo "done"']
+        image: redis:6.0.10
+        command: ['sh', '-c', 'for i in $(seq 1 10); do if redis-cli -h redis info > /dev/null 2>&1; then echo "DB UP"; exit 0; fi; echo "DB not up yet ..."; sleep 1; done; echo "DB never came up --> ERROR"; exit 1;']
       {{- end }}    
 ---
 apiVersion: v1
