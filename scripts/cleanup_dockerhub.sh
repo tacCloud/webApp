@@ -1,7 +1,7 @@
 #!/bin/bash
 #https://devopsheaven.com/docker/dockerhub/2018/04/09/delete-docker-image-tag-dockerhub.html
 USERNAME="rmccabe3701"
-#DOCUKERHUB_PASSWORD should be in the env
+#DOCKERHUB_PASSWORD should be in the env
 ORGANIZATION="${USERNAME}"
 IMAGE="inventory-web-app"
 TAG=$1
